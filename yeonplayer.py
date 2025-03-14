@@ -20,6 +20,7 @@ def camrecording():
 
     contrast = 1
     brightness = 0
+    paused = False
 
     if cam.isOpened():
         fps = cam.get(cv.CAP_PROP_FPS)
@@ -28,20 +29,20 @@ def camrecording():
 
         while True:
             valid, img = cam.read()
+            if not paused:
+                if not valid:
+                    print("카메라를 불러올 수 없습니다.")
+                    break
+                
+                img = contrastandbrightness(img, contrast, brightness)
+                if mod == 'record':
+                    target.write(img)
+                    cv.circle(img, (20, 20), 10, (255, 255, 255), -5)
+                    cv.circle(img, (20, 20), 10, (0, 0, 255), -5)
+                    cv.putText(img, 'REC', (10, 50), cv.FONT_HERSHEY_DUPLEX, 0.5, (255, 255, 255), 2)
+                    cv.putText(img, 'REC', (10, 50), cv.FONT_HERSHEY_DUPLEX, 0.5, (0, 0, 255), 1)
 
-            if not valid:
-                print("카메라를 불러올 수 없습니다.")
-                break
-            
-            img = contrastandbrightness(img, contrast, brightness)
-            if mod == 'record':
-                target.write(img)
-                cv.circle(img, (20, 20), 10, (255, 255, 255), -5)
-                cv.circle(img, (20, 20), 10, (0, 0, 255), -5)
-                cv.putText(img, 'REC', (10, 50), cv.FONT_HERSHEY_DUPLEX, 0.5, (255, 255, 255), 2)
-                cv.putText(img, 'REC', (10, 50), cv.FONT_HERSHEY_DUPLEX, 0.5, (0, 0, 255), 1)
-
-            cv.imshow('Yeonplayer', img)
+                cv.imshow('Yeonplayer', img)
 
 
             key = cv.waitKey(wait_msec)
@@ -60,6 +61,9 @@ def camrecording():
             elif key == ord('x') or key == ord('X'):
                 contrast = 1
                 brightness = 0
+            elif key == ord('p') or key == ord('P'):
+                paused = not paused
+                
             brightness = np.clip(brightness, -255, 255)
             contrast = np.clip(contrast, 0.1, 3)
         
