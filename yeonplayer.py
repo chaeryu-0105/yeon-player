@@ -35,7 +35,7 @@ def camrecording():
                     break
                 
                 img = contrastandbrightness(img, contrast, brightness)
-                if mod == 'record':
+                if mod == 'record' and not paused:
                     target.write(img)
                     cv.circle(img, (20, 20), 10, (255, 255, 255), -5)
                     cv.circle(img, (20, 20), 10, (0, 0, 255), -5)
